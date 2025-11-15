@@ -1,0 +1,156 @@
+import { useParams } from "react-router-dom";
+import { User } from "../../../utils/Controllers/User";
+import { useEffect, useState } from "react";
+import {
+    Card,
+    CardBody,
+    Typography,
+    Chip,
+} from "@material-tailwind/react";
+import {
+    UserRound,
+    Phone,
+    BadgeCheck,
+    Calendar,
+    School as SchoolIcon,
+    MapPin,
+    Image
+} from "lucide-react";
+import Loading from "../../Other/UI/Loadings/Loading";
+import CreateSchool from "./_components/CreateSchool";
+
+export default function OwnerDetail() {
+    const { id } = useParams();
+    const [owner, setOwner] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const getOwner = async () => {
+        try {
+            setLoading(true);
+            const response = await User?.GetUser(id);
+            setOwner(response?.data);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        getOwner();
+    }, [id]);
+
+    if (loading) return <Loading />;
+
+    if (!owner) {
+        return (
+            <div className="flex justify-center items-center h-60">
+                <Typography>Owner topilmadi</Typography>
+            </div>
+        );
+    }
+
+    return (
+        <div className="mx-auto space-y-6">
+
+            {/* Header + Create Button */}
+            <div className="flex justify-between items-center">
+                <Typography variant="h4" className="font-bold text-black">
+                    Markaz egasi haqida
+                </Typography>
+                <CreateSchool ownerId={owner.id} />
+            </div>
+
+            {/* Owner Card — Black & White */}
+            <Card className="shadow-lg border border-gray-300 rounded-xl bg-white">
+                <div className="px-6 py-5 border-b border-gray-300">
+                    <div className="flex items-center gap-4">
+                        <UserRound className="w-12 h-12 text-black" />
+                        <div>
+                            <Typography variant="h5" className="font-semibold text-black">
+                                {owner.full_name}
+                            </Typography>
+                            <Typography className="text-sm text-gray-600">
+                                Rol: {owner.role}
+                            </Typography>
+                        </div>
+                    </div>
+                </div>
+
+                <CardBody className="px-6 py-5 space-y-4">
+
+                    {/* Phone */}
+                    <div className="flex items-center gap-3">
+                        <Phone className="w-5 h-5 text-black" />
+                        <Typography className="text-gray-800">{owner.phone_number}</Typography>
+                    </div>
+
+                    {/* Login */}
+                    <div className="flex items-center gap-3">
+                        <BadgeCheck className="w-5 h-5 text-black" />
+                        <Typography className="text-gray-800">Login: {owner.login}</Typography>
+                    </div>
+
+                    {/* Dates */}
+                    <div className="flex flex-col gap-2 text-gray-700">
+                        <div className="flex items-center gap-3">
+                            <Calendar className="w-5 h-5 text-black" />
+                            <Typography className="text-sm">
+                                Yaratilgan: {new Date(owner.createdAt).toLocaleString()}
+                            </Typography>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                            <Calendar className="w-5 h-5 text-black" />
+                            <Typography className="text-sm">
+                                Yangilangan: {new Date(owner.updatedAt).toLocaleString()}
+                            </Typography>
+                        </div>
+                    </div>
+                </CardBody>
+            </Card>
+
+            {/* SCHOOL LIST — black/white cards */}
+            <div>
+                <Typography
+                    variant="h5"
+                    className="font-semibold mb-3 flex items-center gap-2 text-black"
+                >
+                    <SchoolIcon className="w-6 h-6 text-black" />
+                    Uning markazlari
+                </Typography>
+
+                {owner.school.length === 0 ? (
+                    <Typography className="text-gray-700 text-sm">
+                        Hozircha markaz yo‘q.
+                    </Typography>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {owner.school.map((s) => (
+                            <Card
+                                key={s.id}
+                                className="border border-gray-300 rounded-xl shadow-sm bg-white hover:shadow-lg transition p-4"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <Image className="w-10 h-10 text-black" />
+                                    <Typography variant="h6" className="text-black">
+                                        {s.name}
+                                    </Typography>
+                                </div>
+
+                                <div className="mt-3 flex items-center gap-3 text-gray-800">
+                                    <MapPin className="w-5 h-5 text-black" />
+                                    <Typography className="text-sm">{s.address}</Typography>
+                                </div>
+
+                                <Typography className="text-xs text-gray-500 mt-3">
+                                    Yaratilgan: {new Date(s.createdAt).toLocaleString()}
+                                </Typography>
+                            </Card>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
