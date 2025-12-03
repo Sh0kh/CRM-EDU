@@ -1,4 +1,4 @@
-export default function Delete({color, size}) {
+export default function DeleteIcon({ color, size }) {
     return (
         <svg
             style={{ color: color, fontSize: size }}

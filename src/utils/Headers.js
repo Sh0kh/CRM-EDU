@@ -1,7 +1,8 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-export const BASE_URL = "https://dev.usderp.uz/edu";
+export const BASE_URL = "https://dev.ithubs.uz/edu";
+// export const BASE_URL = "https://dev.usderp.uz/preschool";
 
 export const $api = axios.create({
     baseURL: `${BASE_URL}/api`,
@@ -58,11 +59,11 @@ $api.interceptors.response.use(
             } catch (refreshError) {
                 // localStorage.clear();
                 // window.location.href = '/login';
-                Cookies.remove('token');
-                Cookies.remove('refresh_token');
-                Cookies.remove('us_nesw');
-                Cookies.remove('nesw');
-                window.location.href = '/login';
+                // Cookies.remove('token');
+                // Cookies.remove('refresh_token');
+                // Cookies.remove('us_nesw');
+                // Cookies.remove('nesw');
+                // window.location.href = '/login';
                 // useNavigate('/login');
                 return Promise.reject(refreshError);
             }

@@ -30,11 +30,12 @@ const Login = () => {
         return;
       }
 
-      const { id, role } = user;
+      const { id, role, school_id } = user;
 
       const { access_token, refresh_token } = tokens;
 
       Cookies.set("uid", id);
+      Cookies.set("school_id", school_id);
       Cookies.set("role", role);
       Cookies.set("token", access_token);
       Cookies.set("refresh_token", refresh_token);
@@ -43,7 +44,14 @@ const Login = () => {
 
       if (role === "superadmin") {
         navigate("/superadmin/dashboard");
-      } else {
+      }
+      else if (role === "owner") {
+        navigate("/owner/dashboard");
+      }
+      else if (role === "administrator") {
+        navigate("/admin/dashboard");
+      }
+      else {
         navigate("/dashboard");
       }
 

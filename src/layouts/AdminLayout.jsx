@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
 import AdminHeader from "../Components/Other/UI/Header/AdminHeader";
-import Sidebar from "../Components/SuperAdmin/Sidebar";
+import Sidebar from "../Components/Admin/Sidebar";
 
-export default function SuperAdminLayout() {
-    const [active, setActive] = useState(false); // true = открыт сайдбар
+export default function AdminLayout() {
+    const [active, setActive] = useState(false);
 
     return (
         <div className="flex w-full overflow-hidden bg-[#FAFAFA] relative">

@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import Loading from "../../Other/UI/Loadings/Loading";
 import CreateSchool from "./_components/CreateSchool";
+import EmptyData from "../../Other/UI/NoData/EmptyData";
+import CONFIG from "../../../utils/Config";
 
 export default function OwnerDetail() {
     const { id } = useParams();
@@ -121,34 +123,48 @@ export default function OwnerDetail() {
                 </Typography>
 
                 {owner.school.length === 0 ? (
-                    <Typography className="text-gray-700 text-sm">
-                        Hozircha markaz yo‘q.
-                    </Typography>
+                    <EmptyData text={'Markazlar mavjud emas'} />
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {owner.school.map((s) => (
                             <Card
                                 key={s.id}
-                                className="border border-gray-300 rounded-xl shadow-sm bg-white hover:shadow-lg transition p-4"
+                                className="border border-gray-200 rounded-2xl shadow-md bg-white p-5 transition hover:shadow-xl"
                             >
-                                <div className="flex items-center gap-3">
-                                    <Image className="w-10 h-10 text-black" />
+                                <div className="flex flex-col items-start gap-3">
+                                    {/* Foto */}
+                                    {s?.image ? (
+                                        <img
+                                            className="h-40  rounded-xl border"
+                                            src={CONFIG?.API_URL + s?.image}
+                                            alt="Maktab rasmi"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-40 bg-gray-100 rounded-xl flex items-center justify-center">
+                                            <Image className="w-12 h-12 text-gray-500" />
+                                        </div>
+                                    )}
+
+                                    {/* Nomi */}
                                     <Typography variant="h6" className="text-black">
                                         {s.name}
                                     </Typography>
-                                </div>
 
-                                <div className="mt-3 flex items-center gap-3 text-gray-800">
-                                    <MapPin className="w-5 h-5 text-black" />
-                                    <Typography className="text-sm">{s.address}</Typography>
-                                </div>
+                                    {/* Manzil */}
+                                    <div className="flex items-center gap-2 text-gray-700">
+                                        <MapPin className="w-5 h-5 text-black" />
+                                        <Typography className="text-sm">{s.address}</Typography>
+                                    </div>
 
-                                <Typography className="text-xs text-gray-500 mt-3">
-                                    Yaratilgan: {new Date(s.createdAt).toLocaleString()}
-                                </Typography>
+                                    {/* Sana */}
+                                    <Typography className="text-xs text-gray-500 mt-2">
+                                        Yaratilgan: {new Date(s.createdAt).toLocaleString()}
+                                    </Typography>
+                                </div>
                             </Card>
                         ))}
                     </div>
+
                 )}
             </div>
         </div>

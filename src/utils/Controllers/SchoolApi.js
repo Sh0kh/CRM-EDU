@@ -9,6 +9,10 @@ class School {
         });
         return response;
     }
+    static GetById = async (id) => {
+        const response = await $api.get(`/school/${id}`)
+        return response;
+    }
 }
 
 export { School }

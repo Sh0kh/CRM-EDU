@@ -6,17 +6,17 @@ import OwnerDetail from "../Components/SuperAdmin/OwnerDetail";
 export const SuperAdminRoutes = [
     {
         name: 'Super admin dashboard',
-        path: '/superadmin/dashboard',
+        path: 'dashboard',
         component: <Dashboard />
     },
     {
         name: 'Super admin owner',
-        path: '/superadmin/owner',
+        path: 'owner',
         component: <Owner />
     },
     {
         name: 'Super admin Owner detail',
-        path: '/superadmin/owner/:id',
+        path: 'owner/:id',
         component: <OwnerDetail />
     },
 ]

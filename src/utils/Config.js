@@ -1,5 +1,5 @@
 const CONFIG = {
-  API_URL: 'https://dev.usderp.uz/edu/api/',
+  API_URL: 'https://dev.usderp.uz/edu/',
 };
 
 export default CONFIG;

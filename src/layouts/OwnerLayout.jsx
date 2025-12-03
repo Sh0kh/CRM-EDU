@@ -1,9 +1,9 @@
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
 import AdminHeader from "../Components/Other/UI/Header/AdminHeader";
-import Sidebar from "../Components/SuperAdmin/Sidebar";
+import Sidebar from "../Components/Owner/Sidebar";
 
-export default function SuperAdminLayout() {
+export default function OwnerLayout() {
     const [active, setActive] = useState(false); // true = открыт сайдбар
 
     return (

@@ -25,7 +25,6 @@ export default function CreateSchool() {
     const handleCreateSchool = async () => {
         try {
             setLoading(true);
-
             const formData = new FormData();
             formData.append("name", name);
             formData.append("address", address);
