@@ -42,4 +42,4 @@ class GroupApi {
         return response;
     }
 
-} export { GroupApi }
+} export { GroupApi }   
