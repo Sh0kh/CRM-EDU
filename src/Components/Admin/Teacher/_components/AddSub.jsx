@@ -5,10 +5,12 @@ import {
     DialogBody,
     DialogFooter
 } from "@material-tailwind/react";
-import { Plus, X } from "lucide-react";
+import { Book, Plus, X } from "lucide-react";
 import { GroupApi } from "../../../../utils/Controllers/GroupApi";
 import Cookies from "js-cookie";
 import { Alert } from "../../../../utils/Alert";
+import { SubjectApi } from "../../../../utils/Controllers/SubjectApi";
+import { Employee } from "../../../../utils/Controllers/Employee";
 
 export default function AddSub({ employee, refresh }) {
     const [open, setOpen] = useState(false);
@@ -23,7 +25,7 @@ export default function AddSub({ employee, refresh }) {
     // subject uchun selectda ko'rinmasligi kerak bo'lganlar
     const GetSubjects = async () => {
         try {
-            const response = await GroupApi.GetAll(Number(Cookies?.get("school_id")));
+            const response = await SubjectApi.Get(Number(Cookies?.get("school_id")));
 
             if (response && response.data) {
                 const used = employee?.subject?.map(s => s.subject_name.trim()) || [];
@@ -40,9 +42,11 @@ export default function AddSub({ employee, refresh }) {
     };
 
     useEffect(() => {
-        GetSubjects();
-        setSubjects(employee?.subject || []);
-    }, [employee]);
+        if (open) {
+            GetSubjects();
+            setSubjects(employee?.subject || []);
+        }
+    }, [employee, open]);
 
     // ➕ Subject qo‘shish
     const AddSubject = async () => {
@@ -57,7 +61,7 @@ export default function AddSub({ employee, refresh }) {
                 subject_name: selected?.name || ""
             };
 
-            const response = await GroupApi?.AddSubject(data);
+            const response = await Employee?.AddSubject(data);
 
             if (response) {
                 Alert("Muvaffaqiyatli qo'shildi!", "success");
@@ -90,9 +94,9 @@ export default function AddSub({ employee, refresh }) {
         <>
             <Button
                 onClick={handleOpen}
-                className="bg-gray-200 text-gray-700 hover:bg-gray-300 normal-case p-2 rounded-lg shadow-sm"
+                className="bg-green-500 text-white hover:bg-green-700 normal-case p-2 rounded-lg shadow-sm"
             >
-                <Plus size={18} />
+                <Book size={18} />
             </Button>
 
             <Dialog open={open} handler={handleOpen} size="sm" className="rounded-lg">

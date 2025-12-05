@@ -6,8 +6,6 @@ import {
     DialogBody,
     DialogFooter,
     Input,
-    Select,
-    Option,
     Spinner,
 } from "@material-tailwind/react";
 import EditIcon from "../../../Other/UI/Icons/Edit";
@@ -25,20 +23,27 @@ export default function Put({ data, refresh }) {
 
     const [editData, setEditData] = useState({
         teacher_id: data?.teacher_id || "",
-        price: data?.price || "",
+        price: String(data?.price || ""),
         method: data?.method || "",
         month: data?.month || "",
         description: data?.description || "",
     });
 
-    const [teachers, setTeachers] = useState([]); 
+    const [teachers, setTeachers] = useState([]);
     const [methods, setMethods] = useState([]);
 
     const school_id = Number(Cookies.get("school_id"));
+
     const months = [
         "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
         "Iyul", "Avgust", "Sentabr", "Oktabr", "Noyabr", "Dekabr"
     ];
+
+    // ------- PRICE FORMATTER -------
+    const formatPrice = (value) => {
+        const number = String(value).replace(/\D/g, "");
+        return number.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    };
 
     useEffect(() => {
         if (open) {
@@ -60,11 +65,18 @@ export default function Put({ data, refresh }) {
     const updateSalary = async () => {
         setLoading(true);
         try {
+            const sendData = {
+                ...editData,
+                price: Number(editData.price.replace(/\D/g, "")),
+                teacher_id: Number(editData.teacher_id),
+            };
+
             await SalaryApi.Update({
                 school_id: data.school_id,
                 id: data.id,
-                data: editData,
+                data: sendData,
             });
+
             Alert("Oylik muvaffaqiyatli tahrirlandi!", "success");
             setOpen(false);
             refresh();
@@ -89,54 +101,65 @@ export default function Put({ data, refresh }) {
                 <DialogHeader>Oylik tahrirlash</DialogHeader>
 
                 <DialogBody className="flex flex-col gap-4">
-                    {/* O‘qituvchi select */}
-                    <Select
-                        label="O‘qituvchi"
+
+                    {/* O‘qituvchi */}
+                    <select
+                        className="border p-2 rounded-md"
                         value={editData.teacher_id}
-                        onChange={(val) => setEditData({ ...editData, teacher_id: val })}
+                        onChange={(e) =>
+                            setEditData({ ...editData, teacher_id: e.target.value })
+                        }
                     >
+                        <option value="">O‘qituvchini tanlang</option>
                         {teachers.map((t) => (
-                            <Option key={t.id} value={t.id}>
+                            <option key={t.id} value={t.id}>
                                 {t.full_name || t.name}
-                            </Option>
+                            </option>
                         ))}
-                    </Select>
+                    </select>
 
                     {/* Miqdor */}
                     <Input
-                        type="number"
+                        type="text"
                         label="Miqdor (so‘m)"
-                        value={editData.price}
-                        onChange={(e) =>
-                            setEditData({ ...editData, price: Number(e.target.value) })
-                        }
+                        value={formatPrice(editData.price)}
+                        onChange={(e) => {
+                            const clean = e.target.value.replace(/\D/g, "");
+                            setEditData({ ...editData, price: clean });
+                        }}
                     />
 
-                    {/* To‘lov usuli select */}
-                    <Select
-                        label="To‘lov usuli"
+                    {/* To‘lov usuli */}
+                    <select
+                        className="border p-2 rounded-md"
                         value={editData.method}
-                        onChange={(val) => setEditData({ ...editData, method: val })}
+                        onChange={(e) =>
+                            setEditData({ ...editData, method: e.target.value })
+                        }
                     >
+                        <option value="">To‘lov usulini tanlang</option>
                         {methods.map((m) => (
-                            <Option key={m.id} value={m.name}>
+                            <option key={m.id} value={m.name}>
                                 {m.name}
-                            </Option>
+                            </option>
                         ))}
-                    </Select>
+                    </select>
 
-                    <Select
-    label="Oy"
-    value={editData.month}
-    onChange={(val) => setEditData({ ...editData, month: val })}
->
-    {months.map((name) => (
-        <Option key={name} value={name}>
-            {name}
-        </Option>
-    ))}
-</Select>
-
+                    {/* Oy */}
+                    <select
+                        className="border p-2 rounded-md"
+                        value={editData.month}
+                        onChange={(e) =>
+                            setEditData({ ...editData, month: e.target.value })
+                        }
+                    >
+                        <option value="">Oy tanlang</option>
+                        {months.map((name) => (
+                            <option key={name} value={name}>
+                                {name}
+                            </option>
+                        ))}
+                    </select>
 
                     {/* Izoh */}
                     <Input

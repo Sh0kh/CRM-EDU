@@ -9,6 +9,7 @@ class User {
         const response = await $api.get(`/user`)
         return response;
     }
+
     static GetUser = async (id) => {
         const response = await $api.get(`/user/${id}`)
         return response;

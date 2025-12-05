@@ -7,38 +7,48 @@ import {
     DialogFooter,
     Input,
     Typography,
+    Select,
+    Option,
 } from "@material-tailwind/react";
 import { School } from "../../../../utils/Controllers/SchoolApi";
 import { Alert } from "../../../../utils/Alert";
 import { useParams } from "react-router-dom";
 
-export default function CreateSchool() {
-    const { id } = useParams()
+export default function CreateSchool({ refresh }) {
+    const { id } = useParams();
     const [open, setOpen] = useState(false);
     const [name, setName] = useState("");
     const [address, setAddress] = useState("");
     const [image, setImage] = useState(null);
+    const [type, setType] = useState(""); // School или PreSchool
     const [loading, setLoading] = useState(false);
 
     const handleOpen = () => setOpen(!open);
 
     const handleCreateSchool = async () => {
+        if (!type) {
+            return Alert("Iltimos, markaz turini tanlang!", "error");
+        }
+
         try {
             setLoading(true);
             const formData = new FormData();
             formData.append("name", name);
             formData.append("address", address);
             formData.append("owner_id", id);
+            formData.append("type", type); // добавляем тип
             if (image) formData.append("image", image);
 
             await School?.CreateSchool(formData);
 
             setOpen(false);
             Alert("Muvaffaqiyatli!", "success");
-            // очистка
+            // Очистка
             setName("");
             setAddress("");
             setImage(null);
+            setType("");
+            refresh()
         } catch (error) {
             console.log(error);
             Alert(error?.response?.data?.message || "Xatolik yuz berdi!", "error");
@@ -65,6 +75,19 @@ export default function CreateSchool() {
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                     />
+
+                    {/* Тип Markaz */}
+                    <div>
+                        <Typography className="text-sm mb-1">Markaz turi</Typography>
+                        <Select
+                            value={type}
+                            onChange={(val) => setType(val)}
+                            label="Markaz turi"
+                        >
+                            <Option value="School">School</Option>
+                            <Option value="PreSchool">PreSchool</Option>
+                        </Select>
+                    </div>
 
                     {/* File input */}
                     <div>

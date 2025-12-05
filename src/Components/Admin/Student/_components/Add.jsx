@@ -19,14 +19,20 @@ export default function Add({ student, refresh }) {
 
     const handleOpen = () => setOpen(!open);
 
+
+
     const GetGroups = async () => {
         try {
             const response = await GroupApi.GetAll(Number(Cookies?.get("school_id")));
             if (response && response.data) {
-                const studentGroupIds = student?.group?.map(g => g.id) || [];
-                const availableGroups = response.data.filter(group =>
-                    !studentGroupIds.includes(group.id)
+                // ID групп, где студент уже состоит (берём group_id)
+                const studentGroupIds = student?.group?.map(g => g.group_id) || [];
+
+                // Оставляем только группы, которых нет у студента
+                const availableGroups = response.data.filter(
+                    (group) => !studentGroupIds.includes(group.id)
                 );
+
                 setGroups(availableGroups);
             }
         } catch (error) {
@@ -34,9 +40,12 @@ export default function Add({ student, refresh }) {
         }
     };
 
+
     useEffect(() => {
-        GetGroups();
-    }, [student]);
+        if (open) {
+            GetGroups();
+        }
+    }, [student, open]);
 
     const AddToGroup = async () => {
         if (!selectedGroup) return;
@@ -56,12 +65,11 @@ export default function Add({ student, refresh }) {
                 setOpen(false);
                 setSelectedGroup("");
                 Alert("Muvaffaqiyatli!", "success");
-                refresh()
+                refresh();
             }
         } catch (error) {
             console.log(error);
             Alert("Xato!", "error");
-
         } finally {
             setLoading(false);
         }
@@ -102,31 +110,29 @@ export default function Add({ student, refresh }) {
                             Guruhni tanlang
                         </label>
 
-                        <select
-                            value={selectedGroup}
-                            onChange={(e) => setSelectedGroup(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none"
-                        >
-                            <option value="" disabled>
-                                Guruhni tanlang
-                            </option>
+                        {groups.length > 0 ? (
+                            <select
+                                value={selectedGroup}
+                                onChange={(e) => setSelectedGroup(e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none"
+                            >
+                                <option value="" disabled>
+                                    Guruhni tanlang
+                                </option>
 
-                            {groups.length > 0 ? (
-                                groups.map((group) => (
+                                {groups.map((group) => (
                                     <option key={group.id} value={group.id}>
                                         {group.name}
                                     </option>
-                                ))
-                            ) : (
-                                <option value="" disabled>
-                                    Mavjud guruh yo'q
-                                </option>
-                            )}
-                        </select>
+                                ))}
+                            </select>
+                        ) : (
+                            <p className="text-gray-500 text-sm">Mavjud guruh yo'q</p>
+                        )}
                     </div>
                 </DialogBody>
 
-                <DialogFooter className="pt-3 border-t ">
+                <DialogFooter className="pt-3 border-t">
                     <Button
                         variant="outlined"
                         color="gray"

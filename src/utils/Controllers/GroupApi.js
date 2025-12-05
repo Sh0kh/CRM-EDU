@@ -34,11 +34,19 @@ class GroupApi {
         return response;
     }
     static AddSubject = async (data) => {
-        const response = await $api.post(`/employee-subject`, data)
+        const response = await $api.post(`/group-subject`, data)
         return response;
     }
     static DeleteSubject = async (id) => {
         const response = await $api.delete(`/employee-subject/${id}`)
+        return response;
+    }
+    static StudentOut = async (id) => {
+        const response = await $api.delete(`/student-group/${id}`)
+        return response;
+    }
+    static TeacherOut = async (id) => {
+        const response = await $api.delete(`/employee-group/${id}`)
         return response;
     }
 

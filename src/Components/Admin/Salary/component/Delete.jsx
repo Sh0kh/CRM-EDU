@@ -12,7 +12,6 @@ export default function Delete({ id, refresh }) {
     const handleOpen = () => setOpen(!open);
 
   const handleDelete = async () => {
-    console.log("Deleting salary with id:", id, "school_id:", Cookies.get("school_id"));
     try {
         await SalaryApi.Delete({ school_id: Cookies.get("school_id"), id });
         Alert("Oylik muvaffaqiyatli o'chirildi!", "success");

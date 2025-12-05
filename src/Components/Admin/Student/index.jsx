@@ -4,7 +4,7 @@ import Create from "./_components/Create";
 import Cookies from "js-cookie";
 
 import { Button } from "@material-tailwind/react";
-import { Phone, User, Calendar, Users, ChevronLeft, ChevronRight } from "lucide-react";
+import { Phone, User, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import Delete from "./_components/Delete";
 import Put from "./_components/Put";
 import Eye from "../../Other/UI/Icons/Eye";
@@ -15,7 +15,6 @@ import Add from "./_components/Add";
 
 export default function Student() {
     const [students, setStudents] = useState([]);
-
     const [pagination, setPagination] = useState({
         currentPage: 1,
         total_pages: 1,
@@ -45,66 +44,58 @@ export default function Student() {
         GetStudent(1);
     }, []);
 
-    if (loading) {
-        return (
-            <Loading />
-        )
-    }
+    if (loading) return <Loading />;
 
     return (
         <>
             {/* Header */}
-            <div className="flex items-center justify-between mb-5">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-5 gap-3 sm:gap-0">
                 <h1 className="text-[25px] font-bold">Talabalar</h1>
                 <Create refresh={() => GetStudent(pagination.currentPage)} />
             </div>
 
             {students?.length > 0 ? (
                 <>
-                    {/* Table */}
+                    {/* Table wrapper для скролла на мобильных */}
                     <div className="overflow-x-auto border border-gray-200 rounded-lg">
-                        <table className="min-w-full divide-y divide-gray-200">
+                        <table className="min-w-[400px] sm:min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-4 py-2 text-left text-gray-600 font-medium">#</th>
-                                    <th className="px-4 py-2 text-left text-gray-600 font-medium">O‘quvchi</th>
-                                    <th className="px-4 py-2 text-left text-gray-600 font-medium">Telefon</th>
-                                    <th className="px-4 py-2 text-left text-gray-600 font-medium">Ota-ona</th>
-                                    <th className="px-4 py-2 text-left text-gray-600 font-medium">Ota-ona tel</th>
-                                    <th className="px-4 py-2 text-left text-gray-600 font-medium">Status</th>
-                                    <th className="px-4 py-2 text-left text-gray-600 font-medium">Yaratilgan sana</th>
-                                    <th className="px-4 py-2 text-left text-gray-600 font-medium">Ammalar</th>
+                                    <th className="px-2 py-2 text-left text-gray-600 font-medium text-sm">#</th>
+                                    <th className="px-2 py-2 text-left text-gray-600 font-medium text-sm">O‘quvchi</th>
+                                    <th className="px-2 py-2 text-left text-gray-600 font-medium text-sm hidden sm:table-cell">Telefon</th>
+                                    <th className="px-2 py-2 text-left text-gray-600 font-medium text-sm hidden md:table-cell">Ota-ona</th>
+                                    <th className="px-2 py-2 text-left text-gray-600 font-medium text-sm hidden md:table-cell">Ota-ona tel</th>
+                                    <th className="px-2 py-2 text-left text-gray-600 font-medium text-sm hidden lg:table-cell">Status</th>
+                                    <th className="px-2 py-2 text-left text-gray-600 font-medium text-sm hidden lg:table-cell">Yaratilgan sana</th>
+                                    <th className="px-2 py-2 text-left text-gray-600 font-medium text-sm">Ammalar</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white">
                                 {students.map((s, index) => (
                                     <tr key={s.id} className="hover:bg-gray-50 transition">
-                                        <td className="px-4 py-2">{index + 1 + (pagination.currentPage - 1) * 10}</td>
-                                        <td className="px-4 py-2 ">
-                                            <div className="flex items-start gap-[10px]">
-                                                <User className="w-5 h-5 text-gray-700" /> {s.full_name}
+                                        <td className="px-2 py-2 text-sm">{index + 1 + (pagination.currentPage - 1) * 10}</td>
+                                        <td className="px-2 py-2 text-sm flex items-center gap-1 sm:gap-2">
+                                            <User className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" /> {s.full_name}
+                                        </td>
+                                        <td className="px-2 py-2 text-sm hidden sm:table-cell">
+                                            <div className="flex items-center gap-1 sm:gap-2">
+                                                <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" /> {s.phone_number}
                                             </div>
                                         </td>
-                                        <td className="px-4 py-2 ">
-                                            <div className="flex items-center gap-2">
-                                                <Phone className="w-5 h-5 text-gray-700" /> {s.phone_number}
+                                        <td className="px-2 py-2 text-sm hidden md:table-cell">{s.parents_full_name}</td>
+                                        <td className="px-2 py-2 text-sm hidden md:table-cell">{s.parents_phone_number}</td>
+                                        <td className="px-2 py-2 text-sm hidden lg:table-cell">{s.status ? "Faol" : "No Faol"}</td>
+                                        <td className="px-2 py-2 text-sm hidden lg:table-cell">
+                                            <div className="flex items-center gap-1">
+                                                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" /> {new Date(s.createdAt).toLocaleDateString()}
                                             </div>
                                         </td>
-                                        <td className="px-4 py-2">{s.parents_full_name}</td>
-                                        <td className="px-4 py-2">{s.parents_phone_number}</td>
-                                        <td className="px-4 py-2">{s.status ? "Faol" : "No Faol"}</td>
-                                        <td className="px-4 py-2">
-                                            <div className="flex items-center gap-[10px]">
-                                                <Calendar className="w-4 h-4 text-gray-500" /> {new Date(s.createdAt).toLocaleDateString()}
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-2 ">
-                                            <div className="flex items-center justify-left gap-[5px]">
+                                        <td className="px-2 py-2 text-sm">
+                                            <div className="flex flex-wrap sm:flex-nowrap items-center gap-1 sm:gap-2">
                                                 <NavLink to={`/admin/student/${s?.id}`}>
-                                                    <Button
-                                                        className="bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 normal-case p-[8px]"
-                                                    >
-                                                        <Eye size={18} />
+                                                    <Button className="bg-blue-600 p-[9px] text-white hover:bg-blue-700 active:bg-blue-800 normal-case  sm:p-2">
+                                                        <Eye size={16} />
                                                     </Button>
                                                 </NavLink>
                                                 <Add student={s} refresh={() => GetStudent(pagination.currentPage)} />
@@ -117,26 +108,26 @@ export default function Student() {
                             </tbody>
                         </table>
                     </div>
+
                     {/* Pagination */}
                     {pagination?.total_pages > 1 && (
-                        <div className="flex justify-center items-center gap-4 mt-4">
+                        <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 mt-4">
                             <Button
-                                className="bg-black text-white p-3"
+                                className="bg-black text-white p-2 sm:p-3"
                                 disabled={pagination.currentPage <= 1 || loading}
                                 onClick={() => GetStudent(pagination.currentPage - 1)}
                             >
-                                <ChevronLeft className="w-5 h-5" />
-
+                                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                             </Button>
 
-                            <div className="font-medium">{pagination.currentPage} / {pagination.total_pages}</div>
+                            <div className="font-medium text-sm sm:text-base">{pagination.currentPage} / {pagination.total_pages}</div>
 
                             <Button
-                                className="bg-black text-white p-3"
+                                className="bg-black text-white p-2 sm:p-3"
                                 disabled={pagination.currentPage >= pagination.total_pages || loading}
                                 onClick={() => GetStudent(pagination.currentPage + 1)}
                             >
-                                <ChevronRight className="w-5 h-5" />
+                                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                             </Button>
                         </div>
                     )}

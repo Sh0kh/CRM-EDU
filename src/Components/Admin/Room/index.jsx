@@ -11,17 +11,17 @@ import Put from "./_components/Put";
 
 export default function Room() {
     const [rooms, setRooms] = useState([]);
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true);
 
     const getRooms = async () => {
         try {
-            setLoading(true)
+            setLoading(true);
             const response = await RoomApi.Get();
             setRooms(response?.data || []);
         } catch (error) {
             console.log(error);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     };
 
@@ -29,17 +29,14 @@ export default function Room() {
         getRooms();
     }, []);
 
-    if (loading) {
-        return (
-            <Loading />
-        )
-    }
+    if (loading) return <Loading />;
 
     return (
         <>
-            <div className="flex items-center justify-between mb-5">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-5 gap-3 sm:gap-0">
                 <h1 className="text-[25px] font-bold">Xonalar</h1>
-                <Create />
+                <Create refresh={getRooms} />
             </div>
 
             {/* Cards */}
@@ -50,14 +47,15 @@ export default function Room() {
                             key={room.id}
                             className="border border-gray-200 shadow-sm rounded-xl p-3 hover:shadow-md transition"
                         >
-                            <CardBody className="flex flex-col gap-4 p-[10px]">
-                                {/* Название комнаты */}
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2 text-[20px] font-semibold">
-                                        <Building2 className="w-6 h-6 text-gray-700" />
+                            <CardBody className="flex flex-col gap-3 p-3">
+
+                                {/* Название комнаты + действия */}
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+                                    <div className="flex items-center gap-2 text-[18px] sm:text-[20px] font-semibold">
+                                        <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
                                         {room.name}
                                     </div>
-                                    <div className="flex items-center gap-[10px]">
+                                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
                                         <Put data={room} refresh={getRooms} />
                                         <Delete id={room?.id} refresh={getRooms} />
                                     </div>
@@ -65,19 +63,19 @@ export default function Room() {
 
                                 {/* Вместимость */}
                                 <div className="flex items-center gap-2 text-gray-700">
-                                    <Users className="w-5 h-5" />
-                                    <span className="font-medium">
+                                    <Users className="w-4 h-4 sm:w-5 sm:h-5" />
+                                    <span className="font-medium text-sm sm:text-base">
                                         {room.status === "status"
                                             ? "Standart xona"
                                             : `${room.status} o‘quvchi`}
                                     </span>
                                 </div>
 
-                                {/* Дата */}
+                                {/* Дата создания */}
                                 <div className="text-gray-500 text-sm">
-                                    Yar. sana:{" "}
-                                    {new Date(room.createdAt).toLocaleDateString()}
+                                    Yar. sana: {new Date(room.createdAt).toLocaleDateString()}
                                 </div>
+
                             </CardBody>
                         </Card>
                     ))}

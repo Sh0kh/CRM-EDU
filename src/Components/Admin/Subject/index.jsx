@@ -35,11 +35,8 @@ export default function Subject() {
         getSubject();
     }, []);
 
-    if (loading) {
-        return <Loading />;
-    }
+    if (loading) return <Loading />;
 
-    // Формат даты: 2025-11-20T12:10:58.765Z -> 20.11.2025
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
@@ -47,11 +44,13 @@ export default function Subject() {
 
     return (
         <>
-            <div className="flex items-center justify-between mb-4">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3 sm:gap-0">
                 <h1 className="text-[25px] font-bold">Fanlar</h1>
                 <Create refresh={getSubject} />
             </div>
 
+            {/* Cards */}
             {subjects?.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {subjects.map((s) => (
@@ -59,17 +58,20 @@ export default function Subject() {
                             key={s.id}
                             className="border border-gray-200 shadow-sm hover:shadow-lg transition rounded-xl"
                         >
-                            <CardBody className="flex flex-col gap-2">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <Book size={20} />
-                                        <Typography className="text-lg font-semibold">{s.name}</Typography>
+                            <CardBody className="flex flex-col gap-2 p-3">
+                                {/* Title + Actions */}
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+                                    <div className="flex items-center gap-2 text-[16px] sm:text-[18px] font-semibold">
+                                        <Book className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
+                                        <Typography className="text-base sm:text-lg font-semibold">{s.name}</Typography>
                                     </div>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
                                         <Put data={s} refresh={getSubject} />
                                         <Delete id={s?.id} refresh={getSubject} />
                                     </div>
                                 </div>
+
+                                {/* Created Date */}
                                 <Typography className="text-gray-500 text-sm">
                                     Yaralgan: {formatDate(s.createdAt)}
                                 </Typography>

@@ -3,16 +3,15 @@ import { CostCategoryApi } from "../../../utils/Controllers/CostCategoryApi";
 import Cookies from "js-cookie";
 import { Card, CardBody, Typography } from "@material-tailwind/react";
 import Create from "./_components/Create";
-import { FolderKanban } from "lucide-react"; // <-- icon
+import { FolderKanban } from "lucide-react";
 import Delete from "./_components/Delete";
 import Loading from "../../Other/UI/Loadings/Loading";
 import EmptyData from "../../Other/UI/NoData/EmptyData";
 import Put from "./_components/Put";
 
-// функция форматирования даты
+// форматирование даты
 function formatDate(dateString) {
     const date = new Date(dateString);
-
     return date.toLocaleString("ru-RU", {
         day: "2-digit",
         month: "2-digit",
@@ -23,9 +22,7 @@ function formatDate(dateString) {
 }
 
 export default function CostCategory() {
-
-    const [loading, setLoading] = useState(true)
-
+    const [loading, setLoading] = useState(true);
     const [data, setData] = useState([]);
 
     const getCostCategory = async () => {
@@ -35,7 +32,7 @@ export default function CostCategory() {
         } catch (error) {
             console.log(error);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     };
 
@@ -43,50 +40,49 @@ export default function CostCategory() {
         getCostCategory();
     }, []);
 
-    if (loading) {
-        return (
-            <Loading />
-        )
-    }
+    if (loading) return <Loading />;
 
     return (
         <>
-            <div className="flex items-center justify-between mb-5">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-5 gap-3">
                 <h1 className="text-[25px] font-bold">Xarajat turi</h1>
                 <Create refresh={getCostCategory} />
             </div>
 
-            {/* Cards list */}
+            {/* Cards */}
             {data?.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-
                     {data.map((item) => (
-                        <Card key={item.id} className="shadow-md">
-                            <CardBody className="flex items-start gap-3">
-                                {/* ICON */}
-                                <div className="w-full">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-[10px]">
-                                            <FolderKanban size={32} className="text-gray-700" />
-                                            <Typography variant="h6" className="font-bold">
-                                                {item.name}
-                                            </Typography>
-                                        </div>
-                                        <div className="flex items-center gap-[10px]">
-                                            <Put data={item} refresh={getCostCategory} />
-                                            <Delete id={item?.id} refresh={getCostCategory} />
-                                        </div>
-                                    </div>
-                                    <Typography className="text-gray-600 text-sm mt-2">
-                                        Yaratilgan: {formatDate(item.createdAt)}
+                        <Card
+                            key={item.id}
+                            className="w-full border border-gray-200 shadow-sm rounded-lg p-4 hover:shadow-md transition flex flex-col gap-2"
+                        >
+                            <div className="flex justify-between items-start flex-wrap gap-2">
+                                {/* Название и иконка */}
+                                <div className="flex items-center gap-3">
+                                    <FolderKanban size={28} className="text-gray-700" />
+                                    <Typography variant="h6" className="font-semibold">
+                                        {item.name}
                                     </Typography>
                                 </div>
-                            </CardBody>
+
+                                {/* Кнопки действий */}
+                                <div className="flex gap-2 flex-wrap">
+                                    <Put data={item} refresh={getCostCategory} />
+                                    <Delete id={item.id} refresh={getCostCategory} />
+                                </div>
+                            </div>
+
+                            {/* Дата создания */}
+                            <Typography className="text-gray-500 text-sm mt-1">
+                                Yaratilgan: {formatDate(item.createdAt)}
+                            </Typography>
                         </Card>
                     ))}
                 </div>
             ) : (
-                <EmptyData text={"Xarajat turi mavjud emas"} />
+                <EmptyData text="Xarajat turi mavjud emas" />
             )}
         </>
     );

@@ -4,7 +4,7 @@ import AdminHeader from "../Components/Other/UI/Header/AdminHeader";
 import Sidebar from "../Components/Admin/Sidebar";
 
 export default function AdminLayout() {
-    const [active, setActive] = useState(false);
+    const [active, setActive] = useState(true);
 
     return (
         <div className="flex w-full overflow-hidden bg-[#FAFAFA] relative">
@@ -12,7 +12,7 @@ export default function AdminLayout() {
             <div
                 className={`mt-[80px] pb-[30px] px-[15px] min-h-screen transition-all duration-300`}
                 style={{
-                    marginLeft: !active ? "230px" : "110px",
+                    marginLeft: !active ? "230px" : "80px",
                     width: !active ? "calc(100% - 230px)" : "100%",
                 }}
             >

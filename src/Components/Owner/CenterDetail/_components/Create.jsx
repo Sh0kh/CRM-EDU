@@ -12,15 +12,17 @@ import {
 
 import { Employee } from "../../../../utils/Controllers/Employee";
 import { Alert } from "../../../../utils/Alert";
+import { useParams } from "react-router-dom";
 
 export default function CreateAdminModal({ refresh }) {
+    const { id } = useParams()
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const handleOpen = () => setOpen(!open);
 
     const [form, setForm] = useState({
-        school_id: 1,
+        school_id: Number(id),
         full_name: "",
         phone_number: "+998",
         login: "",

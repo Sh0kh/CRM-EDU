@@ -11,34 +11,30 @@ import Put from "./_components/Put";
 
 export default function SocialMedia() {
     const [items, setItems] = useState([]);
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true);
 
-    const getSocialMedia = async () => {
-        setLoading(true)
-        try {
-            const response = await SocialMediaApi.Get(Cookies?.get("school_id"));
-            setItems(response?.data || []);
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false)
-        }
-    };
+        const getSocialMedia = async () => {
+            setLoading(true);
+            try {
+                const response = await SocialMediaApi.Get(Cookies?.get("school_id"));
+                setItems(response?.data || []);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
     useEffect(() => {
         getSocialMedia();
     }, []);
 
-    if (loading) {
-        return (
-            <Loading />
-        )
-    }
+    if (loading) return <Loading />;
 
     return (
         <>
             {/* Header */}
-            <div className="flex items-center justify-between mb-5">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-5 gap-3 sm:gap-0">
                 <h1 className="text-[25px] font-bold">Ijtimoiy tarmoqlar</h1>
                 <Create refresh={getSocialMedia} />
             </div>
@@ -49,28 +45,24 @@ export default function SocialMedia() {
                     {items.map((item) => (
                         <Card
                             key={item.id}
-                            className="border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition p-3"
+                            className="border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition p-3"
                         >
-                            <CardBody className=" p-0">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="p-3 bg-gray-100 rounded-xl">
-                                            <Globe size={28} />
-                                        </div>
-
-                                        {/* Name */}
-                                        <div>
-                                            <Typography variant="h6" className="font-semibold">
-                                                {item.name}
-                                            </Typography>
-                                        </div>
+                            <CardBody className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3">
+                                {/* Icon + Text */}
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-gray-100 rounded-xl flex items-center justify-center">
+                                        <Globe size={24} className="text-gray-700" />
                                     </div>
-                                    <div className="flex items-center gap-[10px]">
-                                        <Put data={item} refresh={getSocialMedia} />
-                                        <Delete id={item?.id} refresh={getSocialMedia} />
-                                    </div>
+                                    <Typography variant="h6" className="font-semibold text-base sm:text-lg">
+                                        {item.name}
+                                    </Typography>
                                 </div>
 
+                                {/* Actions */}
+                                <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
+                                    <Put data={item} refresh={getSocialMedia} />
+                                    <Delete id={item?.id} refresh={getSocialMedia} />
+                                </div>
                             </CardBody>
                         </Card>
                     ))}

@@ -27,18 +27,20 @@ export default function AdminHeader({ active, sidebarOpen, ...props }) {
         <div
             className={`fixed top-[10px] z-30 flex justify-between items-center mb-6 px-6 py-2 rounded-2xl border shadow-lg bg-white transition-all duration-500`}
             style={{
-                width: sidebarOpen ? "calc(99% - 245px)" : "91%",
-                left: sidebarOpen ? "245px" : "120px",
+                width: sidebarOpen ? "calc(99% - 245px)" : "calc(99% - 90px)",
+                left: sidebarOpen ? "245px" : "90px",
             }}
         >
             {/* Левая часть — кнопка меню */}
-            <div className="flex items-center gap-[20px]">
+            <div className="flex items-center gap-[20px] ">
                 <Button
                     onClick={active}
-                    className="px-[12px] py-[8px] rounded-xl bg-black hover:bg-gray-900 text-white transition-all duration-300"
+                    className="px-[12px] py-[8px] rounded-xl bg-black hover:bg-gray-900 text-white transition-all duration-300 hidden md:inline-flex"
                 >
                     <Menu className="w-5 h-5" />
                 </Button>
+
+
             </div>
 
             {/* Правая часть — только профиль */}
@@ -51,7 +53,6 @@ export default function AdminHeader({ active, sidebarOpen, ...props }) {
                         <div className="p-2 rounded-full bg-gray-200">
                             <User className="w-4 h-4" />
                         </div>
-                        <span>Admin</span>
                         <ChevronDown
                             className={`w-4 h-4 transition-transform duration-300 ${openMenu ? "rotate-180" : ""
                                 }`}
@@ -63,15 +64,13 @@ export default function AdminHeader({ active, sidebarOpen, ...props }) {
                             <div className="absolute top-0 left-0 w-full h-1 bg-gray-200"></div>
 
                             <button
-                                onClick={() => navigate("/profile")}
+                                onClick={() => navigate("/admin/profile")}
                                 className="w-full px-4 py-3 text-left text-sm flex items-center gap-2 text-gray-700 hover:bg-gray-100 transition-all duration-200"
                             >
                                 <User className="w-4 h-4" />
                                 <span>Profil</span>
                             </button>
-
                             <div className="h-px my-1 bg-gray-200"></div>
-
                             <button
                                 onClick={handleLogout}
                                 className="w-full px-4 py-3 text-left text-sm flex items-center gap-2 text-red-600 hover:bg-red-50 transition-all duration-200"

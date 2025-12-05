@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Input } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -12,9 +12,24 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const [time, setTime] = useState("");
+
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
+  // REAL TIME CLOCK
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, "0");
+      const m = String(now.getMinutes()).padStart(2, "0");
+      setTime(`${h}:${m}`);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogin = async () => {
     try {
@@ -31,7 +46,6 @@ const Login = () => {
       }
 
       const { id, role, school_id } = user;
-
       const { access_token, refresh_token } = tokens;
 
       Cookies.set("uid", id);
@@ -42,18 +56,11 @@ const Login = () => {
 
       Alert("Muvaffaqiyatli!", "success");
 
-      if (role === "superadmin") {
-        navigate("/superadmin/dashboard");
-      }
-      else if (role === "owner") {
-        navigate("/owner/dashboard");
-      }
-      else if (role === "administrator") {
-        navigate("/admin/dashboard");
-      }
-      else {
-        navigate("/dashboard");
-      }
+      if (role === "superadmin") navigate("/superadmin/dashboard");
+      else if (role === "owner") navigate("/owner/dashboard");
+      else if (role === "administrator") navigate("/admin/dashboard");
+      else if (role === "teacher") navigate("/teacher/dashboard");
+      else navigate("/dashboard");
 
     } catch (error) {
       Alert(error?.response?.data?.message || "Xatolik yuz berdi!", "error");
@@ -67,24 +74,54 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      <div className="Login-bg w-1/2 p-[30px] flex flex-col justify-between bg-gradient-to-br from-black to-indigo-700 text-white">
+    <div className="
+      min-h-screen 
+      flex 
+      flex-col 
+      md:flex-row 
+      items-center 
+      justify-center 
+      md:justify-start 
+      md:items-stretch
+    ">
+
+      {/* LEFT SIDE — DESKTOP ONLY */}
+      <div className="Login-bg hidden md:flex w-1/2 p-[30px] flex-col justify-between bg-gradient-to-br from-black to-indigo-700 text-white">
         <div>
-          <h1 className="text-[60px] font-bold">19:00</h1>
+          <h1 className="text-[40px] md:text-[60px] font-bold">{time}</h1>
         </div>
-        <div className="p-[20px] rounded-[30px] bg-white/10 backdrop-blur-md shadow-lg">
-          <h2 className="text-2xl font-bold mb-2">Zamonaviy boshqaruv tizimi</h2>
-          <p className="text-gray-100">
+
+        <div className="p-[15px] md:p-[20px] rounded-[20px] md:rounded-[30px] bg-white/10 backdrop-blur-md shadow-lg">
+          <h2 className="text-xl md:text-2xl font-bold mb-2">Zamonaviy boshqaruv tizimi</h2>
+          <p className="text-gray-100 text-sm md:text-base">
             Bizning platforma orqali jarayonlarni oson boshqaring.
           </p>
         </div>
       </div>
 
-      <div className="w-full md:w-1/2 flex items-center justify-center p-10 bg-white">
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-10 border border-gray-100">
+      {/* RIGHT SIDE — CENTERED ON MOBILE */}
+      <div className="
+        w-full 
+        md:w-1/2 
+        flex 
+        items-center 
+        justify-center 
+        p-6 md:p-10 
+        bg-white
+      ">
+        <div className="
+          w-full 
+          max-w-md 
+          bg-white 
+          rounded-2xl md:rounded-3xl 
+          shadow-xl md:shadow-2xl 
+          p-6 md:p-10 
+          border border-gray-100
+        ">
+
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800">Kirish</h1>
-            <p className="mt-2 text-gray-500 text-sm">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Kirish</h1>
+            <p className="mt-1 md:mt-2 text-gray-500 text-xs md:text-sm">
               Tizimga kirish uchun ma'lumotlaringizni kiriting
             </p>
           </div>
@@ -109,6 +146,7 @@ const Login = () => {
                 placeholder="Parolni kiriting"
                 crossOrigin={undefined}
               />
+
               <button
                 type="button"
                 onClick={togglePasswordVisibility}
@@ -126,17 +164,10 @@ const Login = () => {
               onClick={handleLogin}
               disabled={loading}
               ripple={true}
-              className="w-full"
+              className="w-full py-2 md:py-3"
             >
               {loading ? "Yuklanmoqda..." : "Kirish"}
             </Button>
-
-            <p className="text-center text-gray-500 text-sm mt-4">
-              Parolni unutdingizmi?{" "}
-              <span className="text-black hover:underline cursor-pointer">
-                Qayta tiklash
-              </span>
-            </p>
           </div>
         </div>
       </div>

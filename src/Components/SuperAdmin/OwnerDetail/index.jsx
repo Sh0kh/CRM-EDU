@@ -60,7 +60,7 @@ export default function OwnerDetail() {
                 <Typography variant="h4" className="font-bold text-black">
                     Markaz egasi haqida
                 </Typography>
-                <CreateSchool ownerId={owner.id} />
+                <CreateSchool refresh={getOwner} ownerId={owner.id} />
             </div>
 
             {/* Owner Card — Black & White */}

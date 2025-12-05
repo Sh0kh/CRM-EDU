@@ -18,15 +18,18 @@ export default function Add({ employee, refresh }) {
     const [loading, setLoading] = useState(false);
 
     const handleOpen = () => setOpen(!open);
-
     const GetGroups = async () => {
         try {
             const response = await GroupApi.GetAll(Number(Cookies?.get("school_id")));
             if (response && response.data) {
-                const employeeGroupIds = employee?.group?.map(g => g.id) || [];
-                const availableGroups = response.data.filter(group =>
-                    !employeeGroupIds.includes(group.id)
+                // Берём group_id, чтобы проверить, в каких группах уже состоит сотрудник
+                const employeeGroupIds = employee?.group?.map(g => g.group_id) || [];
+
+                // Оставляем только группы, которых нет у сотрудника
+                const availableGroups = response.data.filter(
+                    (group) => !employeeGroupIds.includes(group.id)
                 );
+
                 setGroups(availableGroups);
             }
         } catch (error) {
@@ -34,9 +37,12 @@ export default function Add({ employee, refresh }) {
         }
     };
 
+
     useEffect(() => {
-        GetGroups();
-    }, [employee]);
+        if (open) {
+            GetGroups();
+        }
+    }, [employee, open]);
 
     const AddToGroup = async () => {
         if (!selectedGroup) return;

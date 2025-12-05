@@ -9,6 +9,10 @@ class StudentApi {
         const response = await $api.get(`/student/${data?.school_id}/page?page=${data?.page}`)
         return response;
     }
+    static GetById = async (data) => {
+        const response = await $api.get(`/student/${data?.school_id}/${data?.id}/group`)
+        return response;
+    }
     static Delete = async (data) => {
         const response = await $api.delete(`/student/${data?.school_id}/${data?.id}`)
         return response;

@@ -6,38 +6,53 @@ import {
     DialogBody,
     DialogFooter,
     Input,
-    Select,
-    Option,
+    Spinner
 } from "@material-tailwind/react";
 import { PaymentMethodApi } from "../../../../utils/Controllers/PaymentMethodApi";
 import { Payment } from "../../../../utils/Controllers/Payment";
-
+import { GroupApi } from "../../../../utils/Controllers/GroupApi";
 import { Alert } from "../../../../utils/Alert";
 import Cookies from "js-cookie";
+import { Banknote } from "lucide-react";
 
 export default function Create({ refresh, student_id, group_id }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [methods, setMethods] = useState([]);
-const [students, setStudents] = useState([]);
+
     const months = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
+        "Yanvar",
+        "Fevral",
+        "Mart",
+        "Aprel",
+        "May",
+        "Iyun",
+        "Iyul",
+        "Avgust",
+        "Sentabr",
+        "Oktabr",
+        "Noyabr",
+        "Dekabr"
     ];
 
     const [data, setData] = useState({
         school_id: Number(Cookies?.get("school_id")),
-        student_id: student_id || 1,
-        group_id: group_id || 1,
+        student_id: student_id,
+        group_id: group_id ,
         year: new Date().getFullYear().toString(),
         month: "",
         method: "",
-        discount: 0, 
-        price: 0, 
+        discount: "",
+        price: "",
         description: "",
     });
 
     const handleOpen = () => setOpen(!open);
+
+    const formatPrice = (value) => {
+        const num = value.replace(/\D/g, "");
+        return num.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    };
 
     const GetMethods = async () => {
         try {
@@ -51,31 +66,20 @@ const [students, setStudents] = useState([]);
     useEffect(() => {
         if (open) GetMethods();
     }, [open]);
-useEffect(() => {
-  const fetchStudents = async () => {
-    try {
-      const res = await GroupApi.GetStudents(group_id);
-      setStudents(res?.data || []);
-      if (!res?.data.find(s => s.id === student_id)) {
-        setData({ ...data, student_id: res?.data[0]?.id || null }); 
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  fetchStudents();
-}, [group_id]);
+
     const CreatePayment = async () => {
         setLoading(true);
         try {
             await Payment.Create({
                 ...data,
                 year: String(data.year),
-                price: parseInt(data.price),
-                discount: parseInt(data.discount),
+                price: Number(data.price.replace(/\D/g, "")),
+                discount: Number(data.discount),
             });
+
             Alert("Muvaffaqiyatli yaratildi!", "success");
             setOpen(false);
+
             setData({
                 school_id: Number(Cookies?.get("school_id")),
                 student_id: student_id || 1,
@@ -83,10 +87,11 @@ useEffect(() => {
                 year: new Date().getFullYear().toString(),
                 month: "",
                 method: "",
-                discount: 0,
-                price: 0,
+                discount: "0",
+                price: "0",
                 description: "",
             });
+
             refresh();
         } catch (error) {
             console.log(error);
@@ -98,40 +103,49 @@ useEffect(() => {
 
     return (
         <>
-            <Button className="bg-black text-white" onClick={handleOpen}>
-                +
+            <Button className="py-[5px] px-[10px] text-white" color="green" onClick={handleOpen}>
+                <Banknote />
             </Button>
 
             <Dialog open={open} handler={handleOpen} size="sm">
                 <DialogHeader>To'lov yaratish</DialogHeader>
 
                 <DialogBody className="flex flex-col gap-4">
-                    <Select
-                        label="Oy"
-                        value={data.month}
-                        onChange={(value) => setData({ ...data, month: value })}
-                    >
-                        {months.map((month, idx) => (
-                            <Option key={idx} value={month}>
-                                {month}
-                            </Option>
-                        ))}
-                    </Select>
 
+                    {/* Oy */}
+                    <select
+                        className="border p-2 rounded-md"
+                        value={data.month}
+                        onChange={(e) => setData({ ...data, month: e.target.value })}
+                    >
+                        <option value="">Oy tanlang</option>
+                        {months.map((month, idx) => (
+                            <option key={idx} value={month}>
+                                {month}
+                            </option>
+                        ))}
+                    </select>
+
+                    {/* Yil */}
                     <Input
                         label="Yil"
-                        type="text" 
+                        type="text"
                         value={data.year}
                         onChange={(e) => setData({ ...data, year: e.target.value })}
                     />
 
+                    {/* Narx */}
                     <Input
                         label="Narx"
-                        type="number"
-                        value={data.price}
-                        onChange={(e) => setData({ ...data, price: e.target.value })}
+                        type="text"
+                        value={formatPrice(data.price)}
+                        onChange={(e) => {
+                            const clean = e.target.value.replace(/\D/g, "");
+                            setData({ ...data, price: clean });
+                        }}
                     />
 
+                    {/* Chegirma */}
                     <Input
                         label="Chegirma (%)"
                         type="number"
@@ -139,23 +153,27 @@ useEffect(() => {
                         onChange={(e) => setData({ ...data, discount: e.target.value })}
                     />
 
+                    {/* Izoh */}
                     <Input
                         label="Izoh"
                         value={data.description}
                         onChange={(e) => setData({ ...data, description: e.target.value })}
                     />
 
-                    <Select
-                        label="To'lov usuli"
+                    {/* To’lov usuli */}
+                    <select
+                        className="border p-2 rounded-md"
                         value={data.method}
-                        onChange={(value) => setData({ ...data, method: value })}
+                        onChange={(e) => setData({ ...data, method: e.target.value })}
                     >
+                        <option value="">To'lov usuli</option>
                         {methods.map((m) => (
-                            <Option key={m.id} value={m.name}>
+                            <option key={m.id} value={m.name}>
                                 {m.name}
-                            </Option>
+                            </option>
                         ))}
-                    </Select>
+                    </select>
+
                 </DialogBody>
 
                 <DialogFooter className="flex gap-2">

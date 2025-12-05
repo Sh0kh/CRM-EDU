@@ -11,6 +11,8 @@ import Delete from "./_components/Delete";
 import Put from "./_components/Put";
 import Add from "./_components/Add";
 import AddSub from "./_components/AddSub";
+import { NavLink } from "react-router-dom";
+import Eye from "../../Other/UI/Icons/Eye";
 
 export default function Teacher() {
     const [teachers, setTeachers] = useState([]);
@@ -46,36 +48,44 @@ export default function Teacher() {
     }, []);
 
     if (loading) {
-        return (
-            <Loading />
-        )
+        return <Loading />;
     }
 
     return (
         <>
             {/* Header */}
-            <div className="flex items-center justify-between mb-5">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-5 gap-3 sm:gap-0">
                 <h1 className="text-[25px] font-bold">Ustozlar</h1>
                 <Create refresh={() => getTeacher(pagination.currentPage)} />
             </div>
+
             {teachers?.length > 0 ? (
                 <>
                     {/* List */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
                         {teachers.map((t) => (
                             <Card
                                 key={t.id}
-                                className="border border-gray-200 rounded-xl shadow-sm p-3 hover:shadow-md transition"
+                                className="border border-gray-200 rounded-xl p-[0px] shadow-sm  hover:shadow-md transition"
                             >
-                                <CardBody className="flex flex-col gap-3">
+                                <CardBody className="flex flex-col gap-3 p-[15px]">
 
                                     {/* Name */}
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
                                         <div className="flex items-center gap-2 text-[20px] font-semibold">
                                             <User className="w-6 h-6 text-gray-700" />
                                             {t.full_name}
                                         </div>
-                                        <div className="flex items-center gap-[10px]">
+
+                                        {/* Actions */}
+                                        <div className="flex flex-wrap sm:flex-row items-center gap-2">
+                                            <NavLink to={`/admin/teacher/${t?.id}`}>
+                                                <Button
+                                                    className="bg-blue-500 text-white hover:bg-blue-700 normal-case p-2 rounded-lg shadow-sm"
+                                                >
+                                                    <Eye size={20} />
+                                                </Button>
+                                            </NavLink>
                                             <AddSub employee={t} refresh={getTeacher} />
                                             <Add employee={t} refresh={getTeacher} />
                                             <Put teacher={t} refresh={getTeacher} />
@@ -111,8 +121,7 @@ export default function Teacher() {
                     </div>
 
                     {/* Pagination */}
-                    <div className="flex justify-center mt-6 gap-4">
-
+                    <div className="flex flex-col sm:flex-row justify-center items-center mt-6 gap-3 sm:gap-4">
                         <Button
                             className="bg-black text-white p-3"
                             disabled={pagination.currentPage <= 1}
@@ -132,7 +141,6 @@ export default function Teacher() {
                         >
                             <ChevronRight className="w-5 h-5" />
                         </Button>
-
                     </div>
                 </>
             ) : (

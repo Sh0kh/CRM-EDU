@@ -11,6 +11,9 @@ import OwnerLayout from "./layouts/OwnerLayout";
 import AdminProtected from "./Components/Other/ProtectedRoutes/AdminProtected";
 import { AdminRoutes } from "./Routes/AdminRoutes";
 import AdminLayout from "./layouts/AdminLayout";
+import TeacherProtected from "./Components/Other/ProtectedRoutes/TeacherProtected";
+import TeacherLayout from "./layouts/TeacherLayout";
+import { TeacherRoutes } from "./Routes/TeacherRoutes";
 function App() {
   return (
     <Router>
@@ -50,6 +53,19 @@ function App() {
             </AdminProtected>
           }>
             {AdminRoutes.map((route) => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={route.component}
+              />
+            ))}
+          </Route>
+          <Route path="teacher" element={
+            <TeacherProtected>
+              <TeacherLayout />
+            </TeacherProtected>
+          }>
+            {TeacherRoutes.map((route) => (
               <Route
                 key={route.path}
                 path={route.path}

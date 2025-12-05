@@ -5,8 +5,6 @@ import {
     DialogBody,
     DialogFooter,
     Input,
-    Select,
-    Option,
 } from "@material-tailwind/react";
 
 import { useEffect, useState } from "react";
@@ -117,49 +115,75 @@ export default function Create({ refresh }) {
 
                 <DialogBody divider className="flex flex-col gap-4">
 
-                    <Select
-                        label="Xarajat turi (Kategoriya)"
-                        value={String(data.category_id)}
-                        onChange={(value) => setData({ ...data, category_id: value })}
-                    >
-                        {categories.map((cat) => (
-                            <Option key={cat.id} value={String(cat.id)}>
-                                {cat.name}
-                            </Option>
-                        ))}
-                    </Select>
+                    {/* CATEGORY SELECT */}
+                    <div className="flex flex-col">
+                        <label className="mb-1 text-gray-700">Xarajat turi (Kategoriya)</label>
+                        <select
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm
+                                       focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                            value={data.category_id}
+                            onChange={(e) => setData({ ...data, category_id: e.target.value })}
+                        >
+                            <option value="">Tanlang</option>
+                            {categories.map((cat) => (
+                                <option key={cat.id} value={cat.id}>
+                                    {cat.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
+                    {/* PRICE */}
                     <Input
                         label="Narx"
                         value={data.price}
                         onChange={handlePriceChange}
                     />
 
-                    <Select
-                        label="To‘lov turi"
-                        value={String(data.method)}
-                        onChange={(val) => setData({ ...data, method: val })}
-                    >
-                        {methods.map((m) => (
-                            <Option key={m.id} value={m.name}>
-                                {m.name}
-                            </Option>
-                        ))}
-                    </Select>
+                    {/* PAYMENT METHOD SELECT */}
+                    <div className="flex flex-col">
+                        <label className="mb-1 text-gray-700">To‘lov turi</label>
+                        <select
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm
+                                       focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                            value={data.method}
+                            onChange={(e) => setData({ ...data, method: e.target.value })}
+                        >
+                            <option value="">Tanlang</option>
+                            {methods.map((m) => (
+                                <option key={m.id} value={m.name}>
+                                    {m.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-                    {/* MONTH */}
-                    <Select
-                        label="Oy"
-                        value={String(data.month)}
-                        onChange={(val) => setData({ ...data, month: val })}
-                    >
-                        {Array.from({ length: 12 }, (_, i) => (
-                            <Option key={i + 1} value={String(i + 1)}>
-                                {i + 1}-oy
-                            </Option>
-                        ))}
-                    </Select>
+                    {/* MONTH SELECT (uzb latin) */}
+                    <div className="flex flex-col">
+                        <label className="mb-1 text-gray-700">Oy</label>
+                        <select
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm
+                                       focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                            value={data.month}
+                            onChange={(e) => setData({ ...data, month: e.target.value })}
+                        >
+                            <option value="">Tanlang</option>
+                            <option value="1">Yanvar</option>
+                            <option value="2">Fevral</option>
+                            <option value="3">Mart</option>
+                            <option value="4">Aprel</option>
+                            <option value="5">May</option>
+                            <option value="6">Iyun</option>
+                            <option value="7">Iyul</option>
+                            <option value="8">Avgust</option>
+                            <option value="9">Sentabr</option>
+                            <option value="10">Oktabr</option>
+                            <option value="11">Noyabr</option>
+                            <option value="12">Dekabr</option>
+                        </select>
+                    </div>
 
+                    {/* DESCRIPTION */}
                     <Input
                         label="Izoh"
                         value={data.description}
