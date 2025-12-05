@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import Loading from "../../Other/UI/Loadings/Loading";
 import Create from "../Payment/component/Create";
-import Attendance from "./_components/attendance";
+import Attendance from "./_components/Attendance";
 import StudentOut from "./_components/StudentOut";
 import TeacherOut from "./_components/TeacherOut";
 
