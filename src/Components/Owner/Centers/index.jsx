@@ -5,23 +5,35 @@ import { Card, Typography } from "@material-tailwind/react";
 import { MapPin, Image } from "lucide-react";
 import CONFIG from "../../../utils/Config";
 import { NavLink } from "react-router-dom";
+import Loading from "../../Other/UI/Loadings/Loading";
 
 export default function Centers() {
     const id = Cookies.get("uid");
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true)
 
     const GetCenter = async () => {
+        setLoading(true)
         try {
             const response = await User?.GetUser(id);
             setData(response?.data?.school || []);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false)
         }
     };
 
     useEffect(() => {
         GetCenter();
     }, []);
+
+
+    if (loading) {
+        return (
+            <Loading />
+        )
+    }
 
     return (
         <>

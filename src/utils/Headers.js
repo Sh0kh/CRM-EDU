@@ -57,14 +57,14 @@ $api.interceptors.response.use(
                 return $api(originalRequest);
 
             } catch (refreshError) {
-                // localStorage.clear();
-                // window.location.href = '/login';
-                // Cookies.remove('token');
-                // Cookies.remove('refresh_token');
-                // Cookies.remove('us_nesw');
-                // Cookies.remove('nesw');
-                // window.location.href = '/login';
-                // useNavigate('/login');
+                localStorage.clear();
+                window.location.href = '/login';
+                Cookies.remove('token');
+                Cookies.remove('refresh_token');
+                Cookies.remove('us_nesw');
+                Cookies.remove('nesw');
+                window.location.href = '/login';
+                useNavigate('/login');
                 return Promise.reject(refreshError);
             }
         }
