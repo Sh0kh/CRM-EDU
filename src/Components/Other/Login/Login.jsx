@@ -57,7 +57,7 @@ const Login = () => {
       Alert("Muvaffaqiyatli!", "success");
 
       if (role === "superadmin") navigate("/superadmin/dashboard");
-      else if (role === "owner") navigate("/owner/dashboard");
+      else if (role === "owner") navigate("/owner/center");
       else if (role === "administrator") navigate("/admin/dashboard");
       else if (role === "teacher") navigate("/teacher/dashboard");
       else navigate("/dashboard");

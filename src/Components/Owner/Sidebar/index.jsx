@@ -1,35 +1,42 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, Typography } from "@material-tailwind/react";
 
 export default function Sidebar({ open }) {
     const [role] = useState("admin");
     const location = useLocation();
 
+    const [isMobile, setIsMobile] = useState(false);
+
+    // Проверяем ширину экрана при монтировании и при изменении размера
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 700);
+        };
+
+        // Проверяем сразу при загрузке
+        checkMobile();
+
+        // Добавляем слушатель изменения размера окна
+        window.addEventListener('resize', checkMobile);
+
+        // Очистка слушателя при размонтировании
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    // Функция для получения фактического состояния sidebar
+    // Если ширина экрана меньше 700px И open активно, sidebar маленький
+    const getActualOpenState = () => {
+        if (isMobile && open) {
+            return true; // маленький sidebar
+        }
+        return open;
+    };
+
     const groupedMenuItems = [
         {
             section: "Asosiy",
             items: [
-                {
-                    id: 1,
-                    title: "Dashboard",
-                    path: "/owner/dashboard",
-                    icon: (
-                        <svg
-                            className="w-6 h-6"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M3 9.75L12 3l9 6.75M4.5 10.5v9.75h5.25V15h4.5v5.25H19.5V10.5"
-                            />
-                        </svg>
-                    ),
-                },
                 {
                     id: 2,
                     title: "Markaz",
@@ -42,10 +49,13 @@ export default function Sidebar({ open }) {
         },
     ];
 
+    const actualOpen = getActualOpenState();
+
+
     return (
         <Card
-            className={`h-[95%] fixed top-[15px] left-[15px] z-50 shadow-xl bg-white/30 backdrop-blur-md border border-white/20 px-4 py-6 overflow-y-auto transition-all duration-500
-        ${open ? "w-[100px]" : "w-[220px]"}`}
+            className={`h-[95%]   fixed top-[15px] left-[15px] z-50 shadow-xl bg-white/30 backdrop-blur-md border border-white/20 px-4 py-6 overflow-y-auto transition-all duration-500
+        ${actualOpen ? "w-[70px]" : "w-[220px]"}`}
         >
             <div className="flex items-center justify-center mb-6">
             </div>
